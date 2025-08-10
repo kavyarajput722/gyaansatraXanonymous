@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Payment - Cybersecurity Internship</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your EmailJS public key
+  </script>
+
   <style>
     body {
       background: #000;
@@ -67,43 +74,42 @@
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script>
     function payNow() {
-      var options = {
-        "key": "YOUR_KEY_ID", // Replace with your Razorpay Key ID
-        "amount": "29900", // Amount in paise = 299 INR
-        "currency": "INR",
-        "name": "GYAAN SATRA",
-        "description": "Cybersecurity Internship Registration",
-        "handler": function (response){
-    // Send Razorpay response to server for verification
-    fetch("payment-confirmation.php", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      },
-      body: `razorpay_payment_id=${response.razorpay_payment_id}&razorpay_order_id=${response.razorpay_order_id}&razorpay_signature=${response.razorpay_signature}`
-    })
-    .then(res => res.text())
-    .then(data => {
-      alert(data); // Show success or failure message from server
-      if (data.includes("Payment successful")) {
-        window.location.href = "register.html"; // Or confirmation page
-      }
-    })
-    .catch(err => {
-      alert("Server error during payment confirmation.");
-    });
-},
+      const formData = JSON.parse(localStorage.getItem("internshipFormData"));
 
-        "prefill": {
-            "name": "",
-            "email": "",
-            "contact": ""
+      if (!formData) {
+        alert("Missing form data. Please go back and fill the registration form again.");
+        return;
+      }
+
+      const options = {
+        key: "YOUR_KEY_ID", // Replace with your Razorpay Key ID
+        amount: 29900, // ₹299 in paise
+        currency: "INR",
+        name: "GYAAN SATRA",
+        description: "Cybersecurity Internship Registration",
+        handler: function (response) {
+          // Payment successful - send email via EmailJS
+          emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", formData)
+            .then(() => {
+              localStorage.removeItem("internshipFormData");
+              window.location.href = "success.html";
+            })
+            .catch((error) => {
+              alert("Payment succeeded but email failed. Please contact support.");
+              console.error("EmailJS Error:", error);
+            });
         },
-        "theme": {
-            "color": "#ff0000"
+        prefill: {
+          name: formData.name,
+          email: formData.email,
+          contact: formData.phone
+        },
+        theme: {
+          color: "#ff0000"
         }
       };
-      var rzp = new Razorpay(options);
+
+      const rzp = new Razorpay(options);
       rzp.open();
     }
   </script>
