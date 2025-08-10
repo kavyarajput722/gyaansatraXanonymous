@@ -20,8 +20,19 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      flex-direction: column;
       height: 100vh;
       padding: 20px;
+    }
+    #output{
+      background: #1a1a1a;
+      padding: 30px;
+      border-radius: 16px;
+      text-align: center;
+      box-shadow: 0 0 20px rgba(255, 0, 0, 0.4);
+      max-width: 500px;
+      width: 100%;
+
     }
     .container {
       background: #1a1a1a;
@@ -62,6 +73,7 @@
   </style>
 </head>
 <body>
+  
   <div class="container">
     <h1>Pay & Register</h1>
     <p>Cybersecurity & Ethical Hacking Internship</p>
@@ -69,7 +81,10 @@
     <button class="pay-btn" onclick="payNow()">Proceed to Pay</button>
     <button class="pay-btn" onclick="window.location.href='index.html'">GO BACK</button>
   </div>
-
+  <p>please check your details</p>
+  <div id="output">
+    
+  </div>
   <!-- Razorpay Script -->
   <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <script>
@@ -112,6 +127,25 @@
       const rzp = new Razorpay(options);
       rzp.open();
     }
+    
+
+    const outputDiv = document.getElementById('output');
+    const savedData = localStorage.getItem('registration-form');
+
+    if (savedData) {
+      const data = JSON.parse(savedData);
+      outputDiv.innerHTML = `
+        <p><strong>Name:</strong> ${data.name}</p>
+        <p><strong>Email:</strong> ${data.email}</p>
+        <p><strong>contact:</strong> ${data.phone}</p>
+         <p><strong>college:</strong> ${data.college}</p>
+        <p><strong>course:</strong> ${data.course}</p>
+        <p><strong>domain:</strong> ${data.interest}</p>
+      `;
+    } else {
+      outputDiv.innerHTML = '<p>No data found in localStorage.</p>';
+    }
   </script>
+
 </body>
 </html>
