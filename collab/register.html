@@ -4,6 +4,15 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Internship Registration</title>
+  
+  <!-- EmailJS SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+  <script>
+    (function(){
+      emailjs.init("YOUR_PUBLIC_KEY"); // 🔁 Replace with your actual public key
+    })();
+  </script>
+
   <style>
     * {
       margin: 0;
@@ -32,7 +41,7 @@
       background: rgba(255, 255, 255, 0.1);
       backdrop-filter: blur(15px);
       border-radius: 20px;
-      box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 );
+      box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
       padding: 30px;
       width: 90%;
       max-width: 420px;
@@ -88,7 +97,8 @@
 
     .form-group input:focus + label,
     .form-group input:not(:placeholder-shown) + label,
-    .form-group select:focus + label {
+    .form-group select:focus + label,
+    .form-group select:not([value=""]) + label {
       top: -10px;
       left: 8px;
       font-size: 12px;
@@ -132,41 +142,41 @@
 
   <div class="form-container">
     <h2>Internship Registration</h2>
-    <form>
+    <form id="registration-form">
       <div class="form-group">
-        <input type="text" id="name" required placeholder=" " />
+        <input type="text" id="name" name="name" required placeholder=" " />
         <label for="name">Full Name</label>
       </div>
 
       <div class="form-group">
-        <input type="email" id="email" required placeholder=" " />
+        <input type="email" id="email" name="email" required placeholder=" " />
         <label for="email">Email ID</label>
       </div>
 
       <div class="form-group">
-        <input type="tel" id="phone" required placeholder=" " />
+        <input type="tel" id="phone" name="phone" required placeholder=" " />
         <label for="phone">Phone Number</label>
       </div>
 
       <div class="form-group">
-        <input type="text" id="college" required placeholder=" " />
+        <input type="text" id="college" name="college" required placeholder=" " />
         <label for="college">College Name</label>
       </div>
 
       <div class="form-group">
-        <input type="text" id="course" required placeholder=" " />
+        <input type="text" id="course" name="course" required placeholder=" " />
         <label for="course">Course / Branch</label>
       </div>
 
       <div class="form-group">
-        <select id="interest" required>
+        <select id="interest" name="interest" required>
           <option value="" disabled selected hidden></option>
-          <option value="web">Web Development</option>
-          <option value="app">App Development</option>
-          <option value="ml">Machine Learning</option>
-          <option value="cyber">Cybersecurity</option>
-          <option value="uiux">UI/UX Design</option>
-          <option value="uiux">Forensics</option>
+          <option value="Web Development">Web Development</option>
+          <option value="App Development">App Development</option>
+          <option value="Machine Learning">Machine Learning</option>
+          <option value="Cybersecurity">Cybersecurity</option>
+          <option value="UI/UX Design">UI/UX Design</option>
+          <option value="Forensics">Forensics</option>
         </select>
         <label for="interest">Internship Field</label>
       </div>
@@ -174,6 +184,30 @@
       <button type="submit">Register Now</button>
     </form>
   </div>
+
+  <script>
+
+    document.getElementById("registration-form").addEventListener("submit", function(e) {
+      e.preventDefault();
+    
+      // Capture form data
+      const formData = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        phone: document.getElementById("phone").value,
+        college: document.getElementById("college").value,
+        course: document.getElementById("course").value,
+        interest: document.getElementById("interest").value
+      };
+    
+      // Store in localStorage
+      localStorage.setItem("internshipFormData", JSON.stringify(formData));
+    
+      // Redirect to payment gateway
+      window.location.href = "payment.html"; // 👈 Create this next
+    });
+    
+  </script>
 
 </body>
 </html>
